@@ -31,3 +31,6 @@
 
 /* Pre-final mobile polish */
 @media(max-width:760px){.photo-grid{gap:16px}.photo-item img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}.review-card .note,.review-note{color:#405864}.interior-hero .wrap{padding-top:48px;padding-bottom:48px}.about-logo{max-width:min(88vw,430px);height:auto}}
+
+/* Gallery: preserve full images and collection artwork labels */
+.photo-item img{object-fit:contain;background:#f4f6f7}.collection-artwork .photo-item img{object-fit:contain}.review-card .note{color:#405864}
