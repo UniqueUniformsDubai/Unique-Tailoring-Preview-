@@ -1,0 +1,26 @@
+name: Host brand emblem in preview
+on:
+  push:
+    paths:
+      - '.github/workflows/import-brand-emblem.yml'
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download existing emblem into preview
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/logo-emblem.png' --output 'assets/unique-tailoring-emblem.png'
+          test -s assets/unique-tailoring-emblem.png
+      - name: Commit asset
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/unique-tailoring-emblem.png
+          if ! git diff --cached --quiet; then
+            git commit -m 'Host high resolution brand emblem in preview'
+            git push
+          fi
