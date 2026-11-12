@@ -21,3 +21,6 @@
 :root{--teal:#076b7b;--muted:#4d626b}
 .eyebrow{color:#076b7b}.photo-item figcaption{font-size:14px}.review-date{color:#4d626b;font-size:13px}
 @media(max-width:760px){.brand-copy small{font-size:10px;line-height:1.3;letter-spacing:0}.photo-item figcaption{font-size:13px}.eyebrow{font-size:13px}.review-date{font-size:13px}}
+
+/* In-page gallery lightbox, with native Escape-to-close and focus management */
+.gallery-lightbox{width:min(94vw,1080px);max-width:1080px;max-height:94vh;border:0;border-radius:12px;padding:12px;background:#fff;color:#142c3b;box-shadow:0 20px 70px #0005}.gallery-lightbox::backdrop{background:#071821dd}.lightbox-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:4px 4px 12px}.lightbox-caption{font-size:15px;font-weight:600}.lightbox-close{border:0;background:#eaf7fa;color:#142c3b;border-radius:50%;width:42px;height:42px;font-size:29px;line-height:1;cursor:pointer;flex-shrink:0}.lightbox-close:focus-visible{outline:3px solid #076b7b;outline-offset:2px}.lightbox-image{display:block;max-width:100%;width:auto;max-height:calc(94vh - 90px);object-fit:contain;margin:auto}
