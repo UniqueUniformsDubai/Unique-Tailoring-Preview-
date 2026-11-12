@@ -28,3 +28,6 @@
 .story-content{max-width:780px;margin:24px auto 0;font-size:17px;line-height:1.8}.story-content p{margin:0 0 17px}.story-content strong{color:#076b7b;font-size:20px}
 
 .review-card .inside{height:100%}.review-stars{display:block;color:#b77908;font-size:1.35rem;letter-spacing:.13em;margin-bottom:12px}.review-card .note{color:#465563;font-size:.85rem}.review-note{color:#465563;text-align:center;font-size:.92rem;margin-top:22px}
+
+/* Pre-final mobile polish */
+@media(max-width:760px){.photo-grid{gap:16px}.photo-item img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}.review-card .note,.review-note{color:#405864}.interior-hero .wrap{padding-top:48px;padding-bottom:48px}.about-logo{max-width:min(88vw,430px);height:auto}}
