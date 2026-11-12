@@ -1,0 +1,6 @@
+/* Progressive enhancement: gallery remains usable without JavaScript. */
+(()=>{'use strict';const gallery=document.querySelector('.photo-grid');if(!gallery)return;
+const modal=document.createElement('dialog');modal.className='gallery-lightbox';modal.setAttribute('aria-label','Enlarged gallery photograph');modal.innerHTML='<div class="lightbox-toolbar"><span class="lightbox-caption"></span><button type="button" class="lightbox-close" aria-label="Close image">×</button></div><img class="lightbox-image" alt="">';
+document.body.append(modal);const image=modal.querySelector('img'),caption=modal.querySelector('.lightbox-caption'),close=modal.querySelector('button');let last=null;
+document.querySelectorAll('.photo-grid .photo-item a').forEach(link=>{link.addEventListener('click',event=>{if(!modal.showModal)return;event.preventDefault();last=link;const preview=link.querySelector('img');image.src=link.href;image.alt=preview?.alt||'Gallery photograph';caption.textContent=link.closest('figure')?.querySelector('figcaption')?.textContent||image.alt;modal.showModal();close.focus();});});
+close.addEventListener('click',()=>modal.close());modal.addEventListener('click',e=>{if(e.target===modal)modal.close();});modal.addEventListener('close',()=>{image.removeAttribute('src');last?.focus();});})();
