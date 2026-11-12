@@ -1,0 +1,46 @@
+name: Import portfolio photographs into preview
+on:
+  push:
+    paths:
+      - '.github/workflows/import-portfolio.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import-portfolio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Import existing portfolio photographs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/portfolio
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P52-plate4x5-769.jpg' --output 'assets/portfolio/P52-plate4x5-769.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P62-plate4x5-492.jpg' --output 'assets/portfolio/P62-plate4x5-492.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P63-plate4x5-634.jpg' --output 'assets/portfolio/P63-plate4x5-634.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P64-plate4x5-800.jpg' --output 'assets/portfolio/P64-plate4x5-800.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P05-plate4x5-800.jpg' --output 'assets/portfolio/P05-plate4x5-800.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P42-plate4x5-800.jpg' --output 'assets/portfolio/P42-plate4x5-800.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P38-plate4x5-800.jpg' --output 'assets/portfolio/P38-plate4x5-800.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P19-plate4x5-800.jpg' --output 'assets/portfolio/P19-plate4x5-800.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P13-plate4x5-800.jpg' --output 'assets/portfolio/P13-plate4x5-800.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P12-plate4x5-800.jpg' --output 'assets/portfolio/P12-plate4x5-800.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P11-plate4x5-800.jpg' --output 'assets/portfolio/P11-plate4x5-800.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P22-plate4x5-800.jpg' --output 'assets/portfolio/P22-plate4x5-800.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P07-plate4x5-800.jpg' --output 'assets/portfolio/P07-plate4x5-800.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P44-plate4x5-800.jpg' --output 'assets/portfolio/P44-plate4x5-800.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P30-plate4x5-800.jpg' --output 'assets/portfolio/P30-plate4x5-800.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P31-plate4x5-800.jpg' --output 'assets/portfolio/P31-plate4x5-800.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P28-plate4x5-800.jpg' --output 'assets/portfolio/P28-plate4x5-800.jpg'
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/belalabdelaziz27-svg/unique-uniforms-website/main/images/photos/P36-plate4x5-800.jpg' --output 'assets/portfolio/P36-plate4x5-800.jpg'
+      - name: Commit portfolio assets
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/portfolio/
+          if ! git diff --cached --quiet; then
+            git commit -m 'Host original portfolio photographs in preview repository'
+            git push
+          fi
