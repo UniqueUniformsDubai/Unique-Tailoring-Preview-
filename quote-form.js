@@ -7,10 +7,18 @@
   const field = name => form.elements.namedItem(name);
   const review = document.getElementById('quote-review'), message = document.getElementById('quote-message'), whatsapp = document.getElementById('quote-whatsapp');
   const itemsBox = document.getElementById('quote-items'), fieldset = document.getElementById('quote-items-fieldset'), add = document.getElementById('quote-add-item'), status = document.getElementById('quote-items-status');
-  const rows = []; let sequence = 0;
+  const rows = []; let sequence = 0, submissionId = crypto.randomUUID(), busy = false;
+  const endpoint = window.UNIQUE_CRM_ENDPOINT || '';
+  if(endpoint)document.getElementById('quote-privacy').textContent='When you submit, Unique Tailoring Dubai saves your contact details and enquiry to respond and manage your request. Access is restricted to our team. Optional offers are a separate choice; you can ask us to stop them or update your details by contacting info@uniqueuniformsme.com. Garment photos can be attached in WhatsApp.';
+  else document.getElementById('quote-privacy').textContent='Preview: customer records are not saved here. Your details stay on this page until you continue to WhatsApp and tap Send. Our private customer register will be connected when hosting is activated.';
+  const areaValue = () => field('area').value === 'Other' ? field('areaOther').value.trim() : field('area').value;
+  function updateArea(){const other=field('area').value==='Other';document.getElementById('quote-area-other-field').hidden=!other;field('areaOther').disabled=!other;field('areaOther').required=other;}
+  field('area').addEventListener('change',updateArea);updateArea();
+  function phoneValue(){let p=field('phone').value.trim().replace(/[ ()-]/g,'');if(p.startsWith('00'))p='+'+p.slice(2);if(/^05[0-9]{8}$/.test(p))p='+971'+p.slice(1);if(/^971[0-9]{9}$/.test(p))p='+'+p;return /^\+[1-9][0-9]{7,14}$/.test(p)?p:'';}
+
   const today = () => new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Dubai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   field('date').min = today();
-  const invalidate = () => {review.hidden=true;message.textContent='';whatsapp.removeAttribute('href');};
+  const invalidate = () => {submissionId=crypto.randomUUID();review.hidden=true;message.textContent='';whatsapp.removeAttribute('href');};
   const multi = () => ['Tailoring & alterations','Garment repairs','Made-to-measure clothing'].includes(field('service').value);
   function refreshRows() {
     rows.forEach((r,i)=>{r.heading.textContent=`Item ${i+1}`;r.remove.disabled=rows.length===1;r.remove.setAttribute('aria-label',`Remove item ${i+1}`);});
@@ -35,20 +43,29 @@
     remove.addEventListener('click',()=>{if(rows.length<2)return;rows.splice(rows.indexOf(row),1);root.remove();invalidate();refreshRows();add.focus();});
     refreshRows();invalidate();if(focus)select.focus();
   }
-  function updateService(){const yes=multi();fieldset.hidden=!yes;fieldset.disabled=!yes;for(const key of ['garment','quantity']){document.getElementById(`quote-${key}-field`).hidden=yes;field(key).disabled=yes;field(key).required=!yes;field(key).setCustomValidity('');}if(yes&&!rows.length)addRow('',false);invalidate();}
+  function updateService(){const corporate=field('service').value==='Corporate uniforms';field('company').required=corporate;field('company').placeholder=corporate?'Required for corporate enquiries':'Optional';document.querySelector('label[for=quote-company]').textContent='Company / organisation'+(corporate?' *':' (optional)');const yes=multi();fieldset.hidden=!yes;fieldset.disabled=!yes;for(const key of ['garment','quantity']){document.getElementById(`quote-${key}-field`).hidden=yes;field(key).disabled=yes;field(key).required=!yes;field(key).setCustomValidity('');}if(yes&&!rows.length)addRow('',false);invalidate();}
   const params=new URLSearchParams(location.search),presets={corporate:'Corporate uniforms',alterations:'Tailoring & alterations'};
   if(presets[params.get('service')])field('service').value=presets[params.get('service')];
   if(catalog.some(x=>x.id===params.get('item'))){field('service').value='Tailoring & alterations';addRow(params.get('item'),false);}
   updateService();field('service').addEventListener('change',updateService);add.addEventListener('click',()=>addRow());form.addEventListener('input',invalidate);form.addEventListener('change',invalidate);
-  for(const key of ['name','garment'])field(key).addEventListener('input',()=>field(key).setCustomValidity(''));
-  form.addEventListener('submit',event=>{
-    event.preventDefault();field('date').min=today();field('name').setCustomValidity(field('name').value.trim()?'':'Please enter your name.');if(!multi())field('garment').setCustomValidity(field('garment').value.trim()?'':'Please enter a garment or uniform type.');if(!form.reportValidity())return;
+  for(const key of ['name','garment','company','phone','areaOther'])field(key).addEventListener('input',()=>field(key).setCustomValidity(''));
+  form.addEventListener('submit',async event=>{
+    event.preventDefault();if(busy)return;field('company').setCustomValidity(field('company').required&&!field('company').value.trim()?'Please enter your company name.':'');field('areaOther').setCustomValidity(field('areaOther').required&&!field('areaOther').value.trim()?'Please enter your area and city.':'');field('phone').setCustomValidity(phoneValue()?'':'Enter a valid mobile number, such as 0501234567 or an international number with + and country code.');field('date').min=today();field('name').setCustomValidity(field('name').value.trim()?'':'Please enter your name.');if(!multi())field('garment').setCustomValidity(field('garment').value.trim()?'':'Please enter a garment or uniform type.');if(!form.reportValidity())return;
     const val=key=>String(field(key).value||'').trim(),lines=['Hello Unique Tailoring Dubai, I would like a quotation.','',`Service: ${val('service')}`];
     if(multi()){lines.push('','Requested garments / services:');rows.forEach((row,i)=>{const item=catalog.find(x=>x.id===row.select.value);lines.push(`${i+1}. ${item?`${item.category} — ${item.name}`:'Other / help me choose'} | Quantity: ${row.quantity.value}`);if(row.note.value.trim())lines.push(`   Details: ${row.note.value.trim()}`);});lines.push('','Please assess the garments and confirm the final price and any fitting requirements.');}
     else lines.push(`Garment / uniform: ${val('garment')}`,`Quantity: ${val('quantity')}`);
-    lines.push(`Preferred completion / delivery date: ${val('date')||'Flexible / please advise'}`,`Fabric: ${val('fabric')}`,`Logo / branding: ${val('branding')}`,`Name: ${val('name')}`);if(val('company'))lines.push(`Company / organisation: ${val('company')}`);if(val('details'))lines.push('',`Additional details: ${val('details')}`);
+    lines.push(`Preferred completion / delivery date: ${val('date')||'Flexible / please advise'}`,`Fabric: ${val('fabric')}`,`Logo / branding: ${val('branding')}`,`Name: ${val('name')}`);lines.push(`Mobile / WhatsApp: ${phoneValue()}`,`Area / community: ${areaValue()}`);if(val('email'))lines.push(`Email: ${val('email')}`);if(val('company'))lines.push(`Company / organisation: ${val('company')}`);if(val('details'))lines.push('',`Additional details: ${val('details')}`);
     lines.push('','Please confirm the quotation including any applicable VAT, availability and timing.','Please advise whether quantity-based special pricing is available for this order.','This is an enquiry; the booking is subject to confirmation.');
-    const draft=lines.join('\n');message.textContent=draft;whatsapp.href='https://wa.me/971555597963?text='+encodeURIComponent(draft);review.hidden=false;document.getElementById('quote-review-heading').focus();
+    const draft=lines.join('\n');
+    const saveStatus=document.getElementById('quote-save-status');saveStatus.textContent='';
+    if(endpoint){busy=true;const locked=Array.from(form.elements).map(control=>[control,control.disabled]);form.setAttribute('aria-busy','true');
+      const payload={submissionId,name:val('name'),phone:phoneValue(),email:val('email'),company:val('company'),area:areaValue(),service:val('service'),marketing:field('marketing').checked,website:val('website'),details:draft};
+      try{locked.forEach(([control])=>control.disabled=true);saveStatus.textContent='Saving your enquiry…';const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),credentials:'omit'});const result=await response.json();if(!response.ok)throw new Error(result.error||'Unable to save your enquiry. Please try again.');document.getElementById('quote-result').textContent=`Enquiry ${result.reference} saved. Our team can follow up using your details. You can also continue to WhatsApp and tap Send to start a conversation.`;saveStatus.textContent='Enquiry saved.';}
+      catch(error){saveStatus.textContent=error.message||'Could not save. Please try again or call us.';return;}
+      finally{busy=false;locked.forEach(([control,disabled])=>control.disabled=disabled);form.removeAttribute('aria-busy');}
+    }
+    message.textContent=draft;whatsapp.href='https://wa.me/971555597963?text='+encodeURIComponent(draft);review.hidden=false;document.getElementById('quote-review-heading').focus();
   });
   document.getElementById('quote-edit').addEventListener('click',()=>{invalidate();field('service').focus();});document.getElementById('quote-submit').disabled=false;
 })();
+

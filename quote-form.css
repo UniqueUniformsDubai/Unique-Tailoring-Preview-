@@ -2,3 +2,6 @@
 
 
 .quote-items{min-width:0;margin:24px 0;padding:20px;border:1px solid #b4d8d6;border-radius:8px;background:#f8fbfb}.quote-items[hidden],.quote-field[hidden]{display:none}.quote-items legend{font-weight:700;color:#173440;padding:0 8px}.quote-item-row{padding:18px 0;border-top:1px solid #d9e7ea}.quote-item-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}.quote-item-header h3{font-size:18px;margin:0}.quote-item-fields{display:grid;grid-template-columns:minmax(0,2fr) minmax(80px,1fr);gap:16px}.quote-item-fields>.quote-field:last-child{grid-column:1/-1}.quote-remove-item{padding:10px 14px;min-height:44px;background:white;color:#425d69;border:1px solid #a8bcc3;border-radius:6px}.quote-section button:disabled{opacity:.5;cursor:default}.quote-field-hint{font-size:13px;color:#425d69;line-height:1.5}@media(max-width:760px){.quote-items{padding:14px}.quote-item-fields{grid-template-columns:1fr}.quote-item-fields>.quote-field:last-child{grid-column:auto}}
+
+
+.quote-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}.quote-marketing{display:flex;gap:10px;align-items:flex-start;margin:16px 0}.quote-marketing input{width:20px;min-width:20px;height:20px;margin-top:2px}
