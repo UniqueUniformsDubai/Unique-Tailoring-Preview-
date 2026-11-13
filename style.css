@@ -34,3 +34,9 @@
 
 /* Gallery: preserve full images and collection artwork labels */
 .photo-item img{object-fit:contain;background:#f4f6f7}.collection-artwork .photo-item img{object-fit:contain}.review-card .note{color:#405864}
+
+/* Final preview refinements: no cropping of original work on any viewport */
+.photo-item img{width:100%;height:auto;aspect-ratio:4/5;object-fit:contain;object-position:center;background:#f5f7f8}
+@media(max-width:760px){.photo-item img{width:100%;height:auto;aspect-ratio:4/5;object-fit:contain}}
+.collection-artwork .photo-item img{aspect-ratio:auto;max-height:420px;object-fit:contain}
+.footer-copyright{max-width:1180px;margin:18px auto 0;padding-top:14px;border-top:1px solid rgba(255,255,255,.18);font-size:12px;opacity:.85}
