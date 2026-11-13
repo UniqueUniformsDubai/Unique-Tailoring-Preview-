@@ -1,54 +1,54 @@
-/* Prepare a quotation enquiry locally. No form data is stored or submitted by this site. */
+/* Prepare quotation enquiries locally; the customer sends the final WhatsApp message. */
 (() => {
   'use strict';
+  const catalog = [{"id": "1", "category": "Trousers and jeans", "name": "Leg or length shortening"}, {"id": "2", "category": "Trousers and jeans", "name": "Length shortening by hand"}, {"id": "3", "category": "Trousers and jeans", "name": "Suit or formal trouser length"}, {"id": "4", "category": "Trousers and jeans", "name": "Waist adjustment"}, {"id": "5", "category": "Trousers and jeans", "name": "Length and sides"}, {"id": "6", "category": "Trousers and jeans", "name": "Trouser resizing"}, {"id": "7", "category": "Trousers and jeans", "name": "Leather skirt or trouser waist"}, {"id": "8", "category": "Trousers and jeans", "name": "Shortening"}, {"id": "9", "category": "Shirts, blouses and T-shirts", "name": "Length"}, {"id": "10", "category": "Shirts, blouses and T-shirts", "name": "Sides"}, {"id": "11", "category": "Shirts, blouses and T-shirts", "name": "Formal shirt length with original finish"}, {"id": "12", "category": "Shirts, blouses and T-shirts", "name": "Length and sides"}, {"id": "13", "category": "Shirts, blouses and T-shirts", "name": "Full sides with sleeves or shoulders"}, {"id": "14", "category": "Shirts, blouses and T-shirts", "name": "Partial resizing"}, {"id": "15", "category": "Shirts, blouses and T-shirts", "name": "Standard shirt or T-shirt resizing"}, {"id": "16", "category": "Shirts, blouses and T-shirts", "name": "Blouse, sweatshirt or 2-piece set resizing"}, {"id": "17", "category": "Shirts, blouses and T-shirts", "name": "Collar or neck"}, {"id": "18", "category": "Shirts, blouses and T-shirts", "name": "Polo shirt length or sides"}, {"id": "19", "category": "Shirts, blouses and T-shirts", "name": "T-shirt length or sides"}, {"id": "20", "category": "Shirts, blouses and T-shirts", "name": "T-shirt neck or collar"}, {"id": "21", "category": "Dresses, abayas and skirts", "name": "Dress resizing"}, {"id": "22", "category": "Dresses, abayas and skirts", "name": "Abaya or dress shortening"}, {"id": "23", "category": "Dresses, abayas and skirts", "name": "Dress or abaya full sides"}, {"id": "24", "category": "Dresses, abayas and skirts", "name": "Abaya, dress or skirt length, with lining"}, {"id": "25", "category": "Dresses, abayas and skirts", "name": "Abaya or dress full resizing"}, {"id": "26", "category": "Dresses, abayas and skirts", "name": "Party dress partial alteration, with lining"}, {"id": "27", "category": "Suits, blazers and jackets", "name": "Vest"}, {"id": "28", "category": "Suits, blazers and jackets", "name": "Suit jacket back, sides or sleeves"}, {"id": "29", "category": "Suits, blazers and jackets", "name": "Casual or sports sweater resizing"}, {"id": "30", "category": "Suits, blazers and jackets", "name": "Suit jacket resizing"}, {"id": "31", "category": "Suits, blazers and jackets", "name": "Leather jacket resizing"}, {"id": "32", "category": "Suits, blazers and jackets", "name": "Full suit resizing (2 pieces)"}, {"id": "33", "category": "Repairs, zippers, buttons and stitching", "name": "Buttons and studs"}, {"id": "34", "category": "Repairs, zippers, buttons and stitching", "name": "Zipper, small"}, {"id": "35", "category": "Repairs, zippers, buttons and stitching", "name": "Zipper, metal or large"}, {"id": "36", "category": "Repairs, zippers, buttons and stitching", "name": "Pockets and belts"}, {"id": "37", "category": "Repairs, zippers, buttons and stitching", "name": "Inner or lining tailoring"}, {"id": "38", "category": "Made to order", "name": "Jalabiya with design"}, {"id": "39", "category": "Made to order", "name": "Ladies blouse with design"}, {"id": "40", "category": "Made to order", "name": "Abaya with lining"}, {"id": "41", "category": "Made to order", "name": "New top or blouse with design"}, {"id": "42", "category": "Made to order", "name": "New long-sleeved shirt"}, {"id": "43", "category": "Made to order", "name": "New trousers with pockets"}, {"id": "44", "category": "Curtains and express service", "name": "Tape"}, {"id": "45", "category": "Curtains and express service", "name": "Alterations"}, {"id": "46", "category": "Curtains and express service", "name": "Next-day alterations, per item"}, {"id": "47", "category": "Curtains and express service", "name": "Same-day, per item"}];
   const form = document.getElementById('quote-form');
   if (!form) return;
-  const review = document.getElementById('quote-review');
-  const message = document.getElementById('quote-message');
-  const whatsapp = document.getElementById('quote-whatsapp');
-  const date = form.elements.date;
-  const todayInDubai = () => new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Dubai', year: 'numeric', month: '2-digit', day: '2-digit'
-  }).format(new Date());
-  date.min = todayInDubai();
-  const services = { corporate: 'Corporate uniforms', alterations: 'Tailoring & alterations' };
-  const selected = services[new URLSearchParams(window.location.search).get('service')];
-  if (selected) form.elements.service.value = selected;
-  const invalidateReview = () => {
-    review.hidden = true;
-    whatsapp.removeAttribute('href');
-    message.textContent = '';
-  };
-  form.addEventListener('input', invalidateReview);
-  form.addEventListener('change', invalidateReview);
-  form.addEventListener('submit', event => {
-    event.preventDefault();
-    date.min = todayInDubai();
-    form.elements.name.setCustomValidity(form.elements.name.value.trim() ? '' : 'Please enter your name.');
-    form.elements.garment.setCustomValidity(form.elements.garment.value.trim() ? '' : 'Please enter a garment or uniform type.');
-    if (!form.reportValidity()) return;
-    const data = new FormData(form);
-    const val = key => String(data.get(key) || '').trim();
-    const lines = ['Hello Unique Tailoring Dubai, I would like a quotation.', '',
-      `Service: ${val('service')}`, `Garment / uniform: ${val('garment')}`,
-      `Quantity: ${val('quantity')}`, `Preferred completion / delivery date: ${val('date') || 'Flexible / please advise'}`,
-      `Fabric: ${val('fabric')}`, `Logo / branding: ${val('branding')}`, `Name: ${val('name')}`];
-    if (val('company')) lines.push(`Company / organisation: ${val('company')}`);
-    if (val('details')) lines.push('', `Additional details: ${val('details')}`);
-    lines.push('', 'Please confirm the quotation including any applicable VAT, availability and timing.',
-      'Please advise whether quantity-based special pricing is available for this order.');
-    const draft = lines.join('\n');
-    message.textContent = draft;
-    whatsapp.href = 'https://wa.me/971555597963?text=' + encodeURIComponent(draft);
-    review.hidden = false;
-    document.getElementById('quote-review-heading').focus();
-  });
-  for (const key of ['name', 'garment']) {
-    form.elements[key].addEventListener('input', () => form.elements[key].setCustomValidity(''));
+  const field = name => form.elements.namedItem(name);
+  const review = document.getElementById('quote-review'), message = document.getElementById('quote-message'), whatsapp = document.getElementById('quote-whatsapp');
+  const itemsBox = document.getElementById('quote-items'), fieldset = document.getElementById('quote-items-fieldset'), add = document.getElementById('quote-add-item'), status = document.getElementById('quote-items-status');
+  const rows = []; let sequence = 0;
+  const today = () => new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Dubai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  field('date').min = today();
+  const invalidate = () => {review.hidden=true;message.textContent='';whatsapp.removeAttribute('href');};
+  const multi = () => ['Tailoring & alterations','Garment repairs','Made-to-measure clothing'].includes(field('service').value);
+  function refreshRows() {
+    rows.forEach((r,i)=>{r.heading.textContent=`Item ${i+1}`;r.remove.disabled=rows.length===1;r.remove.setAttribute('aria-label',`Remove item ${i+1}`);});
+    add.disabled=rows.length>=8;
+    status.textContent=rows.length>=8?'Up to 8 services per enquiry. Mention any additional items in the details below.':`${rows.length} ${rows.length===1?'service':'services'} in your enquiry.`;
   }
-  document.getElementById('quote-edit').addEventListener('click', () => {
-    invalidateReview();
-    form.elements.service.focus();
+  function addRow(selected='',focus=true) {
+    if(rows.length>=8)return;
+    const id=++sequence, root=document.createElement('div'), header=document.createElement('div'), heading=document.createElement('h3'), remove=document.createElement('button'), grid=document.createElement('div');
+    root.className='quote-item-row';header.className='quote-item-header';grid.className='quote-item-fields';remove.type='button';remove.className='quote-remove-item';remove.textContent='Remove';header.append(heading,remove);root.append(header);
+    function labeled(text,control,suffix) {const box=document.createElement('div'),label=document.createElement('label');box.className='quote-field';control.id=`quote-item-${id}-${suffix}`;label.htmlFor=control.id;label.textContent=text;box.append(label,control);grid.append(box);}
+    const select=document.createElement('select');select.required=true;select.name=`item-${id}-service`;
+    const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Choose a garment / service';select.append(placeholder);
+    let group;
+    for(const item of catalog){if(!group||group.label!==item.category){group=document.createElement('optgroup');group.label=item.category;select.append(group);}const option=document.createElement('option');option.value=item.id;option.textContent=item.name;group.append(option);}
+    const other=document.createElement('option');other.value='other';other.textContent='Other / help me choose';select.append(other);
+    if(catalog.some(x=>x.id===selected))select.value=selected;
+    labeled('Garment / service *',select,'service');
+    const quantity=document.createElement('input');Object.assign(quantity,{type:'number',inputMode:'numeric',min:'1',max:'1000',step:'1',value:'1',required:true,name:`item-${id}-quantity`});labeled('Quantity *',quantity,'quantity');
+    const note=document.createElement('input');Object.assign(note,{type:'text',maxLength:250,name:`item-${id}-details`,placeholder:'e.g. 2 pairs of jeans, shorten with original hem'});labeled('Item details (optional)',note,'details');root.append(grid);itemsBox.append(root);
+    const row={root,heading,remove,select,quantity,note};rows.push(row);
+    remove.addEventListener('click',()=>{if(rows.length<2)return;rows.splice(rows.indexOf(row),1);root.remove();invalidate();refreshRows();add.focus();});
+    refreshRows();invalidate();if(focus)select.focus();
+  }
+  function updateService(){const yes=multi();fieldset.hidden=!yes;fieldset.disabled=!yes;for(const key of ['garment','quantity']){document.getElementById(`quote-${key}-field`).hidden=yes;field(key).disabled=yes;field(key).required=!yes;field(key).setCustomValidity('');}if(yes&&!rows.length)addRow('',false);invalidate();}
+  const params=new URLSearchParams(location.search),presets={corporate:'Corporate uniforms',alterations:'Tailoring & alterations'};
+  if(presets[params.get('service')])field('service').value=presets[params.get('service')];
+  if(catalog.some(x=>x.id===params.get('item'))){field('service').value='Tailoring & alterations';addRow(params.get('item'),false);}
+  updateService();field('service').addEventListener('change',updateService);add.addEventListener('click',()=>addRow());form.addEventListener('input',invalidate);form.addEventListener('change',invalidate);
+  for(const key of ['name','garment'])field(key).addEventListener('input',()=>field(key).setCustomValidity(''));
+  form.addEventListener('submit',event=>{
+    event.preventDefault();field('date').min=today();field('name').setCustomValidity(field('name').value.trim()?'':'Please enter your name.');if(!multi())field('garment').setCustomValidity(field('garment').value.trim()?'':'Please enter a garment or uniform type.');if(!form.reportValidity())return;
+    const val=key=>String(field(key).value||'').trim(),lines=['Hello Unique Tailoring Dubai, I would like a quotation.','',`Service: ${val('service')}`];
+    if(multi()){lines.push('','Requested garments / services:');rows.forEach((row,i)=>{const item=catalog.find(x=>x.id===row.select.value);lines.push(`${i+1}. ${item?`${item.category} — ${item.name}`:'Other / help me choose'} | Quantity: ${row.quantity.value}`);if(row.note.value.trim())lines.push(`   Details: ${row.note.value.trim()}`);});lines.push('','Please assess the garments and confirm the final price and any fitting requirements.');}
+    else lines.push(`Garment / uniform: ${val('garment')}`,`Quantity: ${val('quantity')}`);
+    lines.push(`Preferred completion / delivery date: ${val('date')||'Flexible / please advise'}`,`Fabric: ${val('fabric')}`,`Logo / branding: ${val('branding')}`,`Name: ${val('name')}`);if(val('company'))lines.push(`Company / organisation: ${val('company')}`);if(val('details'))lines.push('',`Additional details: ${val('details')}`);
+    lines.push('','Please confirm the quotation including any applicable VAT, availability and timing.','Please advise whether quantity-based special pricing is available for this order.','This is an enquiry; the booking is subject to confirmation.');
+    const draft=lines.join('\n');message.textContent=draft;whatsapp.href='https://wa.me/971555597963?text='+encodeURIComponent(draft);review.hidden=false;document.getElementById('quote-review-heading').focus();
   });
-  document.getElementById('quote-submit').disabled = false;
+  document.getElementById('quote-edit').addEventListener('click',()=>{invalidate();field('service').focus();});document.getElementById('quote-submit').disabled=false;
 })();
