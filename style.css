@@ -49,3 +49,6 @@
 /* Comfortable touch targets for quote enquiries */
 .quote-price{display:inline-flex;align-items:center;justify-content:flex-end;min-height:44px;padding:8px 0 8px 10px;font-size:14px}
 @media(max-width:520px){.quote-price{font-size:13px;min-height:44px}}
+
+/* Completed orders: preserve full garments and clear the sticky header on arrival. */
+.completed-order{scroll-margin-top:190px}.completed-project-grid .photo-item img{height:auto;aspect-ratio:4/5;object-fit:contain;background:#f5f7f7}.completed-project-grid{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:760px){.completed-order{scroll-margin-top:210px}.completed-project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:370px){.completed-project-grid{grid-template-columns:1fr}}
