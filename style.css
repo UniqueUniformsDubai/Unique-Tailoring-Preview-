@@ -52,3 +52,6 @@
 
 /* Completed orders: preserve full garments and clear the sticky header on arrival. */
 .completed-order{scroll-margin-top:190px}.completed-project-grid .photo-item img{height:auto;aspect-ratio:4/5;object-fit:contain;background:#f5f7f7}.completed-project-grid{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:760px){.completed-order{scroll-margin-top:210px}.completed-project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:370px){.completed-project-grid{grid-template-columns:1fr}}
+
+/* Arrival guide: keep building landmarks and entrance arrows visible. */
+.location-guide{scroll-margin-top:150px}.location-grid{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}.location-grid .photo-item img{width:100%;height:auto;aspect-ratio:4/5;object-fit:contain;background:#f5f7f7}@media(max-width:760px){.location-grid{grid-template-columns:1fr}.location-grid .photo-item img{aspect-ratio:auto}.location-guide{scroll-margin-top:180px}}
