@@ -43,7 +43,20 @@
     remove.addEventListener('click',()=>{if(rows.length<2)return;rows.splice(rows.indexOf(row),1);root.remove();invalidate();refreshRows();add.focus();});
     refreshRows();invalidate();if(focus)select.focus();
   }
-  function updateService(){const corporate=field('service').value==='Corporate uniforms';field('company').required=corporate;field('company').placeholder=corporate?'Required for corporate enquiries':'Optional';document.querySelector('label[for=quote-company]').textContent='Company / organisation'+(corporate?' *':' (optional)');const yes=multi();fieldset.hidden=!yes;fieldset.disabled=!yes;for(const key of ['garment','quantity']){document.getElementById(`quote-${key}-field`).hidden=yes;field(key).disabled=yes;field(key).required=!yes;field(key).setCustomValidity('');}if(yes&&!rows.length)addRow('',false);invalidate();}
+  function updatePricingOffer(){
+    const service=field('service').value;
+    const copy=service==='Corporate uniforms'
+      ? ['Need uniforms for your staff?', 'Call us to discuss special pricing based on your order quantity, design and requirements.', 'Call about bulk uniform pricing']
+      : service==='Made-to-measure clothing'
+      ? ['Having several garments made?', 'Call us to discuss special pricing for multiple made-to-measure garments, based on the design, fabric and requirements.', 'Call about multiple-garment pricing']
+      : ['Tailoring & alterations','Garment repairs'].includes(service)
+      ? ['Bringing several garments?', 'Call us to discuss special pricing for alterations or repairs to multiple garments, based on the work required.', 'Call about multiple-garment pricing']
+      : ['Ordering uniforms or bringing several garments?', 'Call us to discuss special pricing for bulk uniform orders or alterations to multiple garments.', 'Call about special pricing'];
+    document.getElementById('quantity-offer-heading').textContent=copy[0];
+    document.getElementById('quantity-offer-description').textContent=copy[1];
+    document.getElementById('quantity-offer-call').textContent=copy[2];
+  }
+  function updateService(){updatePricingOffer();const corporate=field('service').value==='Corporate uniforms';field('company').required=corporate;field('company').placeholder=corporate?'Required for corporate enquiries':'Optional';document.querySelector('label[for=quote-company]').textContent='Company / organisation'+(corporate?' *':' (optional)');const yes=multi();fieldset.hidden=!yes;fieldset.disabled=!yes;for(const key of ['garment','quantity']){document.getElementById(`quote-${key}-field`).hidden=yes;field(key).disabled=yes;field(key).required=!yes;field(key).setCustomValidity('');}if(yes&&!rows.length)addRow('',false);invalidate();}
   const params=new URLSearchParams(location.search),presets={corporate:'Corporate uniforms',alterations:'Tailoring & alterations'};
   if(presets[params.get('service')])field('service').value=presets[params.get('service')];
   if(catalog.some(x=>x.id===params.get('item'))){field('service').value='Tailoring & alterations';addRow(params.get('item'),false);}
@@ -55,7 +68,7 @@
     if(multi()){lines.push('','Requested garments / services:');rows.forEach((row,i)=>{const item=catalog.find(x=>x.id===row.select.value);lines.push(`${i+1}. ${item?`${item.category} — ${item.name}`:'Other / help me choose'} | Quantity: ${row.quantity.value}`);if(row.note.value.trim())lines.push(`   Details: ${row.note.value.trim()}`);});lines.push('','Please assess the garments and confirm the final price and any fitting requirements.');}
     else lines.push(`Garment / uniform: ${val('garment')}`,`Quantity: ${val('quantity')}`);
     lines.push(`Preferred completion / delivery date: ${val('date')||'Flexible / please advise'}`,`Fabric: ${val('fabric')}`,`Logo / branding: ${val('branding')}`,`Name: ${val('name')}`);lines.push(`Mobile / WhatsApp: ${phoneValue()}`,`Area / community: ${areaValue()}`);if(val('email'))lines.push(`Email: ${val('email')}`);if(val('company'))lines.push(`Company / organisation: ${val('company')}`);if(val('details'))lines.push('',`Additional details: ${val('details')}`);
-    lines.push('','Please confirm the quotation including any applicable VAT, availability and timing.','Please advise whether quantity-based special pricing is available for this order.','This is an enquiry; the booking is subject to confirmation.');
+    lines.push('','Please confirm the quotation including any applicable VAT, availability and timing.',(val('service')==='Corporate uniforms'?'Please advise whether special pricing is available based on the uniform order quantity.':multi()?'Please advise whether special pricing is available for multiple garments, based on the work required.':'Please advise whether special pricing is available for this enquiry.'),'This is an enquiry; the booking is subject to confirmation.');
     const draft=lines.join('\n');
     const saveStatus=document.getElementById('quote-save-status');saveStatus.textContent='';
     if(endpoint){busy=true;const locked=Array.from(form.elements).map(control=>[control,control.disabled]);form.setAttribute('aria-busy','true');
