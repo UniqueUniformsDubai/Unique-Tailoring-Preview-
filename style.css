@@ -55,3 +55,6 @@
 
 /* Arrival guide: keep building landmarks and entrance arrows visible. */
 .location-guide{scroll-margin-top:150px}.location-grid{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}.location-grid .photo-item img{width:100%;height:auto;aspect-ratio:4/5;object-fit:contain;background:#f5f7f7}@media(max-width:760px){.location-grid{grid-template-columns:1fr}.location-grid .photo-item img{aspect-ratio:auto}.location-guide{scroll-margin-top:180px}}
+
+/* Four distinct arrival views, including the main-street minimart landmark. */
+.location-grid-landmarks{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:760px){.location-grid-landmarks{grid-template-columns:1fr}}
