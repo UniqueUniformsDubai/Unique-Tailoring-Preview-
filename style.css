@@ -40,3 +40,8 @@
 @media(max-width:760px){.photo-item img{width:100%;height:auto;aspect-ratio:4/5;object-fit:contain}}
 .collection-artwork .photo-item img{aspect-ratio:auto;max-height:420px;object-fit:contain}
 .footer-copyright{max-width:1180px;margin:18px auto 0;padding-top:14px;border-top:1px solid rgba(255,255,255,.18);font-size:12px;opacity:.85}
+
+/* Individual quotation links in the service price list */
+.quote-price{display:inline-block;max-width:180px;text-align:right;font-weight:700;font-size:13px;line-height:1.45;color:#087f91;text-decoration:underline;text-underline-offset:3px}
+.quote-price:hover,.quote-price:focus-visible{color:#064e60}
+@media(max-width:520px){.quote-price{max-width:140px;font-size:12px}}
