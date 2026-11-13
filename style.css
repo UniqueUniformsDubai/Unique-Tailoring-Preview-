@@ -45,3 +45,7 @@
 .quote-price{display:inline-block;max-width:180px;text-align:right;font-weight:700;font-size:13px;line-height:1.45;color:#087f91;text-decoration:underline;text-underline-offset:3px}
 .quote-price:hover,.quote-price:focus-visible{color:#064e60}
 @media(max-width:520px){.quote-price{max-width:140px;font-size:12px}}
+
+/* Comfortable touch targets for quote enquiries */
+.quote-price{display:inline-flex;align-items:center;justify-content:flex-end;min-height:44px;padding:8px 0 8px 10px;font-size:14px}
+@media(max-width:520px){.quote-price{font-size:13px;min-height:44px}}
